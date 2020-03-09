@@ -1,0 +1,47 @@
+# ABP
+import numpy as np
+
+class Perceptron(object):
+
+    def __init__(self, no_of_inputs, threshold=1000, learning_rate=0.01):
+        #threshold (epoch) = döngü
+        self.threshold = threshold
+        self.learning_rate = learning_rate
+        #Girdi sayısından bir fazla elemanı olan sıfır dizisi tanımlıyoruz. (Bias=inputu hep 1 olan ağırlık gibi düşünebiliriz)
+        self.weights = np.zeros(no_of_inputs + 1)
+
+    def predict(self, inputs):
+        #Output değeri = summation. Weights dizisindeki ilk eleman Bias, onu sonuca ayrıca ekliyoruz.
+        summation = np.dot(inputs, self.weights[1:]) + self.weights[0]
+        return summation
+
+
+    def train(self, training_inputs, training_output):
+        #training_output = beklenen çıktı
+        for _ in range(self.threshold):
+            for inputs, label in zip(training_inputs, training_output):
+                prediction = self.predict(inputs)
+                #Hata = label-prediction
+                self.weights[1:] += self.learning_rate * (label - prediction) * inputs
+                self.weights[0] += self.learning_rate * (label - prediction)
+      
+training_inputs = [ ]
+training_inputs.append(np.array([1]))
+training_inputs.append(np.array([2]))
+training_inputs.append(np.array([3]))
+#training_inputs.append(np.array([4]))
+
+
+training_output = np.array([3, 5, 7])
+
+#Tek girdili perceptron
+perceptron = Perceptron(1)
+perceptron.train(training_inputs, training_output)
+
+inputs = [4]
+perceptron.predict(inputs)
+print(perceptron.predict(inputs))
+#=> (input)*2+1 = 9
+
+#bias değeri
+print(perceptron.weights[0])
